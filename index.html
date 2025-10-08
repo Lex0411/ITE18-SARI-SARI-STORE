@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sari-Sari Store Inventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --sari-yellow: #f1c40f;
+            --sari-red: #e74c3c;
+            --sari-green: #27ae60;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, var(--sari-red), var(--sari-yellow));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .app-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+        }
+        
+        .app-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            background-color: var(--light);
+            padding: 0 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            color: var(--dark);
+            border: none;
+            padding: 12px 20px;
+            transition: all 0.3s;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: transparent;
+        }
+        
+        .tab-content {
+            padding: 25px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e1e5eb;
+        }
+        
+        /* Remove arrows from number inputs */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: none;
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+        
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+        }
+        
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .badge {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        .inventory-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 0 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stat-card:first-child {
+            margin-left: 0;
+        }
+        
+        .stat-card:last-child {
+            margin-right: 0;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .stat-card.primary {
+            border-top: 4px solid var(--primary);
+        }
+        
+        .stat-card.success {
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .stat-card.warning {
+            border-top: 4px solid var(--warning);
+        }
+        
+        .stat-card.danger {
+            border-top: 4px solid var(--danger);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-buttons .btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .low-stock {
+            background-color: #fff3cd;
+        }
+        
+        .out-of-stock {
+            background-color: #f8d7da;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: #6c757d;
+        }
+        
+        .search-box input {
+            padding-left: 40px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #e1e5eb;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-in-stock {
+            background-color: var(--secondary);
+        }
+        
+        .status-low-stock {
+            background-color: var(--warning);
+        }
+        
+        .status-out-of-stock {
+            background-color: var(--danger);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .toast {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            max-width: 350px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .toast.success {
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .toast-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .toast.success .toast-icon {
+            color: var(--secondary);
+        }
+        
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+        
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Autocomplete dropdown */
+        .autocomplete {
+            position: relative;
+        }
+        
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #e1e5eb;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .autocomplete-items div {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .autocomplete-items div:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .autocomplete-active {
+            background-color: var(--primary) !important;
+            color: white;
+        }
+        
+        /* Quick sale buttons */
+        .quick-sale-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-sale-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            text-align: center;
+            background-color: var(--light);
+            border: 1px solid #e1e5eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quick-sale-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .quick-sale-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .inventory-stats {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                margin: 5px 0;
+            }
+            
+            .quick-sale-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="app-container">
+        <div class="app-header">
+            <h1><i class="fas fa-store me-2"></i>NenengBe Tindahan Inventory</h1>
+            <p>Manage your store products and sales efficiently</p>
+        </div>
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab">Inventory</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab">Sales</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">Settings</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- Dashboard Tab -->
+            <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                <div class="inventory-stats">
+                    <div class="stat-card primary">
+                        <i class="fas fa-boxes fa-2x text-primary"></i>
+                        <div class="stat-value" id="total-products">0</div>
+                        <div>Total Products</div>
+                    </div>
+                    <div class="stat-card success">
+                        <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                        <div class="stat-value" id="total-sales">₱0.00</div>
+                        <div>All Sales/Revenue</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                        <div class="stat-value" id="low-stock-count">0</div>
+                        <div>Low Stock Items</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <i class="fas fa-times-circle fa-2x text-danger"></i>
+                        <div class="stat-value" id="out-of-stock-count">0</div>
+                        <div>Out of Stock</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Recent Sales</span>
+                                <button class="btn btn-sm btn-primary">View All</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Quantity</th>
+                                                <th>Amount</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent-sales-table">
+                                            <!-- Recent sales will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">Quick Actions</div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                                        <i class="fas fa-plus me-2"></i>Add New Product
+                                    </button>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#sellProductModal">
+                                        <i class="fas fa-cash-register me-2"></i>Record Sale
+                                    </button>
+                                    <button class="btn btn-warning" id="export-data-btn">
+                                        <i class="fas fa-file-export me-2"></i>Export Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header">Low Stock Alert</div>
+                            <div class="card-body">
+                                <div id="low-stock-alerts">
+                                    <!-- Low stock alerts will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory Tab -->
+            <div class="tab-pane fade" id="inventory" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Product Inventory</h4>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="fas fa-plus me-2"></i>Add Product
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" id="search-product" placeholder="Search products...">
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table">
+                            <!-- Inventory items will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sales Tab -->
+            <div class="tab-pane fade" id="sales" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Sales Records</h4>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#sellProductModal">
+                        <i class="fas fa-cash-register me-2"></i>Record Sale
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table">
+                            <!-- Sales records will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="settings" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Data Management</div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" id="backup-data-btn">
+                                        <i class="fas fa-download me-2"></i>Backup Data
+                                    </button>
+                                    <button class="btn btn-warning" id="restore-data-btn">
+                                        <i class="fas fa-upload me-2"></i>Restore Data
+                                    </button>
+                                    <button class="btn btn-danger" id="reset-data-btn">
+                                        <i class="fas fa-trash me-2"></i>Reset All Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Sari-Sari Store Inventory System &copy; 2025</p>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-product-form">
+                        <div class="mb-3">
+                            <label for="product-name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="product-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="product-category" class="form-label">Category</label>
+                            <select class="form-select" id="product-category" required>
+                                <option value="">Select Category</option>
+                                <option value="Food">Food</option>
+                                <option value="Beverages">Beverages</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Toiletries">Toiletries</option>
+                                <option value="Household">Household</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="product-price" class="form-label">Price (₱)</label>
+                                <input type="number" class="form-control" id="product-price" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="product-stock" class="form-label">Initial Stock</label>
+                                <input type="number" class="form-control" id="product-stock" min="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="product-description" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="product-description" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="save-product">Save Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Product Modal -->
+    <div class="modal fade" id="sellProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record Sale</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sell-product-form">
+                        <div class="mb-3 autocomplete">
+                            <label for="sell-product-name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="sell-product-name" placeholder="Start typing product name..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sell-quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="sell-quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sell-price" class="form-label">Unit Price (₱)</label>
+                            <input type="number" class="form-control" id="sell-price" min="0" step="0.01" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <strong>Total Amount: ₱<span id="total-amount">0.00</span></strong>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="record-sale">Record Sale</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Sale Modal -->
+    <div class="modal fade" id="quickSaleModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Quick Sale</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="quick-sale-form">
+                        <input type="hidden" id="quick-sale-product-id">
+                        <div class="mb-3">
+                            <label for="quick-sale-product-name" class="form-label">Product</label>
+                            <input type="text" class="form-control" id="quick-sale-product-name" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quick-sale-quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quick-sale-quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quick-sale-price" class="form-label">Unit Price (₱)</label>
+                            <input type="number" class="form-control" id="quick-sale-price" min="0" step="0.01" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <strong>Total: ₱<span id="quick-total-amount">0.00</span></strong>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="quick-record-sale">Record Sale</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-product-form">
+                        <input type="hidden" id="edit-product-id">
+                        <div class="mb-3">
+                            <label for="edit-product-name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="edit-product-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-product-category" class="form-label">Category</label>
+                            <select class="form-select" id="edit-product-category" required>
+                                <option value="">Select Category</option>
+                                <option value="Food">Food</option>
+                                <option value="Beverages">Beverages</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Toiletries">Toiletries</option>
+                                <option value="Household">Household</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-product-price" class="form-label">Price (₱)</label>
+                                <input type="number" class="form-control" id="edit-product-price" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-product-stock" class="form-label">Current Stock</label>
+                                <input type="number" class="form-control" id="edit-product-stock" min="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-product-description" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="edit-product-description" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="update-product">Update Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Data structure
+let products = [];
+let sales = [];
+
+// DOM elements
+const loadingOverlay = document.getElementById('loadingOverlay');
+const toastContainer = document.getElementById('toastContainer');
+
+// Load data from JSON files
+async function loadData() {
+    try {
+        showLoading();
+        console.log('Loading data from Electron...');
+        
+        // Use the Electron API to load data
+        const data = await window.electronAPI.loadAllData();
+        products = data.products || [];
+        sales = data.sales || [];
+        
+        console.log('Data loaded - Products:', products.length, 'Sales:', sales.length);
+        showToast('Data loaded successfully');
+    } catch (error) {
+        console.error('Error loading data:', error);
+        showToast('Error loading data: ' + error.message, 'error');
+        // Initialize empty arrays if loading fails
+        products = [];
+        sales = [];
+    } finally {
+        hideLoading();
+    }
+}
+
+// Save data to JSON files
+async function saveData() {
+    try {
+        showLoading();
+        console.log('Saving data to Electron...');
+        
+        // Save products and sales to separate files using Electron API
+        await window.electronAPI.writeFile('products.json', products);
+        await window.electronAPI.writeFile('sales.json', sales);
+        
+        console.log('Data saved successfully');
+    } catch (error) {
+        console.error('Error saving data:', error);
+        showToast('Error saving data: ' + error.message, 'error');
+        throw error;
+    } finally {
+        hideLoading();
+    }
+}
+
+// Debug function to check data path
+async function debugDataPath() {
+    try {
+        const path = await window.electronAPI.getDataPath();
+        console.log('Data storage path:', path);
+        
+        const productsExist = await window.electronAPI.fileExists('products.json');
+        const salesExist = await window.electronAPI.fileExists('sales.json');
+        
+        console.log('Products file exists:', productsExist);
+        console.log('Sales file exists:', salesExist);
+        
+        showToast(`Data path: ${path}`, 'info');
+    } catch (error) {
+        console.error('Debug error:', error);
+    }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM loaded, initializing app...');
+    
+    
+    await loadData();
+    updateDashboard();
+    renderInventoryTable();
+    renderSalesTable();
+    setupEventListeners();
+    renderQuickSaleButtons();
+    setupAutocomplete();
+});
+
+// Set up event listeners
+function setupEventListeners() {
+    // Save product
+    document.getElementById('save-product').addEventListener('click', addProduct);
+    
+    // Update product
+    document.getElementById('update-product').addEventListener('click', updateProduct);
+    
+    // Record sale
+    document.getElementById('record-sale').addEventListener('click', recordSale);
+    
+    // Quick record sale
+    document.getElementById('quick-record-sale').addEventListener('click', quickRecordSale);
+    
+    // Export data
+    document.getElementById('export-data-btn').addEventListener('click', exportData);
+    
+    // Reset data
+    document.getElementById('reset-data-btn').addEventListener('click', resetData);
+    
+    // Search functionality
+    document.getElementById('search-product').addEventListener('input', filterProducts);
+    
+    // Calculate total amount when quantity or price changes
+    document.getElementById('sell-quantity').addEventListener('input', calculateTotalAmount);
+    document.getElementById('sell-price').addEventListener('input', calculateTotalAmount);
+    
+    // Calculate quick sale total amount
+    document.getElementById('quick-sale-quantity').addEventListener('input', calculateQuickTotalAmount);
+    document.getElementById('quick-sale-price').addEventListener('input', calculateQuickTotalAmount);
+}
+
+// Setup autocomplete for product search in sales form
+function setupAutocomplete() {
+    const productInput = document.getElementById('sell-product-name');
+    
+    productInput.addEventListener('input', function() {
+        const val = this.value;
+        closeAllLists();
+        
+        if (!val) return;
+        
+        const matchingProducts = products.filter(product => 
+            product.name.toLowerCase().includes(val.toLowerCase()) && product.stock > 0
+        );
+        
+        if (matchingProducts.length === 0) return;
+        
+        const list = document.createElement('div');
+        list.setAttribute('id', 'autocomplete-list');
+        list.setAttribute('class', 'autocomplete-items');
+        this.parentNode.appendChild(list);
+        
+        matchingProducts.forEach(product => {
+            const item = document.createElement('div');
+            item.innerHTML = `
+                <strong>${product.name}</strong>
+                <small class="text-muted"> - Stock: ${product.stock} | Price: ₱${product.price.toFixed(2)}</small>
+            `;
+            item.innerHTML += `<input type='hidden' value='${product.name}'>`;
+            
+            item.addEventListener('click', function() {
+                productInput.value = product.name;
+                document.getElementById('sell-price').value = product.price;
+                closeAllLists();
+                calculateTotalAmount();
+            });
+            
+            list.appendChild(item);
+        });
+    });
+    
+    function closeAllLists(elmnt) {
+        const items = document.getElementsByClassName('autocomplete-items');
+        for (let i = 0; i < items.length; i++) {
+            if (elmnt !== items[i] && elmnt !== productInput) {
+                items[i].parentNode.removeChild(items[i]);
+            }
+        }
+    }
+    
+    document.addEventListener('click', function(e) {
+        closeAllLists(e.target);
+    });
+}
+
+// Show loading overlay
+function showLoading() {
+    loadingOverlay.style.display = 'flex';
+}
+
+// Hide loading overlay
+function hideLoading() {
+    loadingOverlay.style.display = 'none';
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            ${type === 'success' ? '<i class="fas fa-check-circle"></i>' : 
+              type === 'error' ? '<i class="fas fa-exclamation-circle"></i>' : 
+              '<i class="fas fa-exclamation-triangle"></i>'}
+        </div>
+        <div class="toast-message">${message}</div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Update dashboard with current data
+function updateDashboard() {
+    // Update product count
+    document.getElementById('total-products').textContent = products.length;
+    
+    // Calculate total sales
+    const totalSales = sales.reduce((total, sale) => total + (sale.quantity * sale.price), 0);
+    document.getElementById('total-sales').textContent = `₱${totalSales.toFixed(2)}`;
+    
+    // Count low stock items (less than 10)
+    const lowStockCount = products.filter(product => product.stock > 0 && product.stock < 10).length;
+    document.getElementById('low-stock-count').textContent = lowStockCount;
+    
+    // Count out of stock items
+    const outOfStockCount = products.filter(product => product.stock === 0).length;
+    document.getElementById('out-of-stock-count').textContent = outOfStockCount;
+    
+    // Update recent sales table
+    renderRecentSales();
+    
+    // Update low stock alerts
+    renderLowStockAlerts();
+}
+
+// Render inventory table
+function renderInventoryTable() {
+    const tableBody = document.getElementById('inventory-table');
+    tableBody.innerHTML = '';
+    
+    if (products.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                    <p class="text-muted">No products found. Add your first product to get started.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+
+    products.forEach((product, index) => {
+        const status = getStockStatus(product.stock);
+        const statusClass = status === 'In Stock' ? 'status-in-stock' : 
+                          status === 'Low Stock' ? 'status-low-stock' : 'status-out-of-stock';
+        
+        const row = document.createElement('tr');
+        row.className = product.stock === 0 ? 'out-of-stock' : product.stock < 10 ? 'low-stock' : '';
+        row.innerHTML = `
+            <td>${product.name}</td>
+            <td>${product.category}</td>
+            <td>₱${product.price.toFixed(2)}</td>
+            <td>${product.stock}</td>
+            <td>
+                <span class="status-indicator ${statusClass}"></span>
+                ${status}
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary edit-product" data-index="${index}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger delete-product" data-index="${index}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to edit and delete buttons
+    document.querySelectorAll('.edit-product').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            editProduct(index);
+        });
+    });
+    
+    document.querySelectorAll('.delete-product').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            deleteProduct(index);
+        });
+    });
+}
+
+// Render sales table
+function renderSalesTable() {
+    const tableBody = document.getElementById('sales-table');
+    tableBody.innerHTML = '';
+    
+    if (sales.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    <i class="fas fa-receipt fa-2x text-muted mb-2"></i>
+                    <p class="text-muted">No sales records found. Record your first sale to get started.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // Sort sales by date (newest first)
+    const sortedSales = [...sales].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    sortedSales.forEach((sale, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${formatDate(sale.date)}</td>
+            <td>${sale.productName}</td>
+            <td>${sale.quantity}</td>
+            <td>₱${sale.price.toFixed(2)}</td>
+            <td>₱${(sale.quantity * sale.price).toFixed(2)}</td>
+            <td>
+                <button class="btn btn-sm btn-danger delete-sale" data-index="${index}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-sale').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            deleteSale(index);
+        });
+    });
+}
+
+// Render recent sales for dashboard
+function renderRecentSales() {
+    const tableBody = document.getElementById('recent-sales-table');
+    tableBody.innerHTML = '';
+    
+    if (sales.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center py-3 text-muted">
+                    No recent sales
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // Get the 5 most recent sales
+    const recentSales = [...sales]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 5);
+    
+    recentSales.forEach(sale => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${sale.productName}</td>
+            <td>${sale.quantity}</td>
+            <td>₱${(sale.quantity * sale.price).toFixed(2)}</td>
+            <td>${formatDate(sale.date)}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Render low stock alerts for dashboard
+function renderLowStockAlerts() {
+    const alertsContainer = document.getElementById('low-stock-alerts');
+    alertsContainer.innerHTML = '';
+    
+    const lowStockProducts = products.filter(product => product.stock > 0 && product.stock < 10);
+    
+    if (lowStockProducts.length === 0) {
+        alertsContainer.innerHTML = `
+            <div class="text-center text-muted py-2">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                All products have sufficient stock
+            </div>
+        `;
+        return;
+    }
+    
+    lowStockProducts.forEach(product => {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-warning py-2 mb-2';
+        alert.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span>${product.name}</span>
+                <span class="badge bg-warning">${product.stock} left</span>
+            </div>
+        `;
+        alertsContainer.appendChild(alert);
+    });
+}
+
+// Render quick sale buttons
+function renderQuickSaleButtons() {
+    const buttonsContainer = document.getElementById('quick-sale-buttons');
+    buttonsContainer.innerHTML = '';
+    
+    if (products.length === 0) {
+        buttonsContainer.innerHTML = `
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Add products to enable quick sales
+            </div>
+        `;
+        return;
+    }
+    
+    // Show only products with stock
+    const availableProducts = products.filter(product => product.stock > 0);
+    
+    if (availableProducts.length === 0) {
+        buttonsContainer.innerHTML = `
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                No products in stock for quick sales
+            </div>
+        `;
+        return;
+    }
+    
+    availableProducts.forEach((product, index) => {
+        const button = document.createElement('div');
+        button.className = 'quick-sale-btn';
+        button.setAttribute('data-product-id', index);
+        button.innerHTML = `
+            <div class="fw-bold">${product.name}</div>
+            <div class="small">Stock: ${product.stock}</div>
+            <div class="small">₱${product.price.toFixed(2)}</div>
+        `;
+        buttonsContainer.appendChild(button);
+        
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.quick-sale-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Open quick sale modal
+            openQuickSaleModal(parseInt(this.getAttribute('data-product-id')));
+        });
+    });
+}
+
+// Open quick sale modal
+function openQuickSaleModal(productIndex) {
+    const product = products[productIndex];
+    
+    document.getElementById('quick-sale-product-id').value = productIndex;
+    document.getElementById('quick-sale-product-name').value = product.name;
+    document.getElementById('quick-sale-price').value = product.price;
+    document.getElementById('quick-sale-quantity').value = 1;
+    document.getElementById('quick-sale-quantity').max = product.stock;
+    
+    calculateQuickTotalAmount();
+    
+    // Show modal
+    const quickSaleModal = new bootstrap.Modal(document.getElementById('quickSaleModal'));
+    quickSaleModal.show();
+}
+
+// Add new product
+async function addProduct() {
+    const name = document.getElementById('product-name').value.trim();
+    const category = document.getElementById('product-category').value;
+    const price = parseFloat(document.getElementById('product-price').value);
+    const stock = parseInt(document.getElementById('product-stock').value);
+    const description = document.getElementById('product-description').value.trim();
+    
+    if (!name || !category || isNaN(price) || isNaN(stock)) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    const newProduct = {
+        id: Date.now(),
+        name,
+        category,
+        price,
+        stock,
+        description
+    };
+    
+    products.push(newProduct);
+    await saveData();
+    
+    // Close modal and reset form
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+    modal.hide();
+    document.getElementById('add-product-form').reset();
+    
+    // Update UI
+    updateDashboard();
+    renderInventoryTable();
+    renderQuickSaleButtons();
+    
+    showToast('Product added successfully');
+}
+
+// Edit product
+function editProduct(index) {
+    const product = products[index];
+    
+    document.getElementById('edit-product-id').value = index;
+    document.getElementById('edit-product-name').value = product.name;
+    document.getElementById('edit-product-category').value = product.category;
+    document.getElementById('edit-product-price').value = product.price;
+    document.getElementById('edit-product-stock').value = product.stock;
+    document.getElementById('edit-product-description').value = product.description || '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+    modal.show();
+}
+
+// Update product
+async function updateProduct() {
+    const index = parseInt(document.getElementById('edit-product-id').value);
+    const name = document.getElementById('edit-product-name').value.trim();
+    const category = document.getElementById('edit-product-category').value;
+    const price = parseFloat(document.getElementById('edit-product-price').value);
+    const stock = parseInt(document.getElementById('edit-product-stock').value);
+    const description = document.getElementById('edit-product-description').value.trim();
+    
+    if (!name || !category || isNaN(price) || isNaN(stock)) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    products[index] = {
+        ...products[index],
+        name,
+        category,
+        price,
+        stock,
+        description
+    };
+    
+    await saveData();
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+    modal.hide();
+    
+    // Update UI
+    updateDashboard();
+    renderInventoryTable();
+    renderQuickSaleButtons();
+    
+    showToast('Product updated successfully');
+}
+
+// Delete product
+async function deleteProduct(index) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products.splice(index, 1);
+        await saveData();
+        
+        // Update UI
+        updateDashboard();
+        renderInventoryTable();
+        renderQuickSaleButtons();
+        
+        showToast('Product deleted successfully');
+    }
+}
+
+// Record sale
+async function recordSale() {
+    const productName = document.getElementById('sell-product-name').value.trim();
+    const quantity = parseInt(document.getElementById('sell-quantity').value);
+    const price = parseFloat(document.getElementById('sell-price').value);
+    
+    if (!productName || isNaN(quantity) || isNaN(price)) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    // Find product by name
+    const productIndex = products.findIndex(p => p.name.toLowerCase() === productName.toLowerCase());
+    
+    if (productIndex === -1) {
+        showToast('Product not found', 'error');
+        return;
+    }
+    
+    const product = products[productIndex];
+    
+    if (quantity > product.stock) {
+        showToast(`Not enough stock. Only ${product.stock} items available.`, 'error');
+        return;
+    }
+    
+    // Update product stock
+    products[productIndex].stock -= quantity;
+    
+    // Record sale
+    const newSale = {
+        productId: product.id,
+        productName: product.name,
+        quantity,
+        price,
+        date: new Date().toISOString()
+    };
+    
+    sales.push(newSale);
+    await saveData();
+    
+    // Close modal and reset form
+    const modal = bootstrap.Modal.getInstance(document.getElementById('sellProductModal'));
+    modal.hide();
+    document.getElementById('sell-product-form').reset();
+    document.getElementById('total-amount').textContent = '0.00';
+    
+    // Update UI
+    updateDashboard();
+    renderInventoryTable();
+    renderSalesTable();
+    renderQuickSaleButtons();
+    
+    showToast('Sale recorded successfully');
+}
+
+// Quick record sale
+async function quickRecordSale() {
+    const productIndex = parseInt(document.getElementById('quick-sale-product-id').value);
+    const quantity = parseInt(document.getElementById('quick-sale-quantity').value);
+    const price = parseFloat(document.getElementById('quick-sale-price').value);
+    
+    if (isNaN(productIndex) || isNaN(quantity) || isNaN(price)) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    const product = products[productIndex];
+    
+    if (quantity > product.stock) {
+        showToast(`Not enough stock. Only ${product.stock} items available.`, 'error');
+        return;
+    }
+    
+    // Update product stock
+    products[productIndex].stock -= quantity;
+    
+    // Record sale
+    const newSale = {
+        productId: product.id,
+        productName: product.name,
+        quantity,
+        price,
+        date: new Date().toISOString()
+    };
+    
+    sales.push(newSale);
+    await saveData();
+    
+    // Close modal and reset form
+    const modal = bootstrap.Modal.getInstance(document.getElementById('quickSaleModal'));
+    modal.hide();
+    
+    // Update UI
+    updateDashboard();
+    renderInventoryTable();
+    renderSalesTable();
+    renderQuickSaleButtons();
+    
+    showToast('Sale recorded successfully');
+}
+
+// Delete sale
+async function deleteSale(index) {
+    if (confirm('Are you sure you want to delete this sale record?')) {
+        // Restore product stock
+        const sale = sales[index];
+        const productIndex = products.findIndex(p => p.id === sale.productId);
+        
+        if (productIndex !== -1) {
+            products[productIndex].stock += sale.quantity;
+        }
+        
+        sales.splice(index, 1);
+        await saveData();
+        
+        // Update UI
+        updateDashboard();
+        renderInventoryTable();
+        renderSalesTable();
+        renderQuickSaleButtons();
+        
+        showToast('Sale record deleted successfully');
+    }
+}
+
+// Calculate total amount for sale
+function calculateTotalAmount() {
+    const quantity = parseInt(document.getElementById('sell-quantity').value) || 0;
+    const price = parseFloat(document.getElementById('sell-price').value) || 0;
+    const total = quantity * price;
+    
+    document.getElementById('total-amount').textContent = total.toFixed(2);
+}
+
+// Calculate total amount for quick sale
+function calculateQuickTotalAmount() {
+    const quantity = parseInt(document.getElementById('quick-sale-quantity').value) || 0;
+    const price = parseFloat(document.getElementById('quick-sale-price').value) || 0;
+    const total = quantity * price;
+    
+    document.getElementById('quick-total-amount').textContent = total.toFixed(2);
+}
+
+// Filter products based on search input
+function filterProducts() {
+    const searchTerm = document.getElementById('search-product').value.toLowerCase();
+    const tableRows = document.querySelectorAll('#inventory-table tr');
+    
+    tableRows.forEach(row => {
+        const productName = row.cells[0]?.textContent.toLowerCase() || '';
+        const category = row.cells[1]?.textContent.toLowerCase() || '';
+        
+        if (productName.includes(searchTerm) || category.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Export data
+function exportData() {
+    const data = {
+        products,
+        sales,
+        exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sari-sari-store-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('Data exported successfully');
+}
+
+// Reset data
+async function resetData() {
+    if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+        products = [];
+        sales = [];
+        await saveData();
+        
+        // Update UI
+        updateDashboard();
+        renderInventoryTable();
+        renderSalesTable();
+        renderQuickSaleButtons();
+        
+        showToast('All data has been reset');
+    }
+}
+
+// Helper function to get stock status
+function getStockStatus(stock) {
+    if (stock === 0) return 'Out of Stock';
+    if (stock < 10) return 'Low Stock';
+    return 'In Stock';
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+}
+</script>
+</body>
+</html>
