@@ -4,7 +4,6 @@ A desktop-based inventory system built with **Electron.js**, **HTML**, **CSS**, 
 
 ### Features
 - Add, view, and delete products
-- Track inventory and sales
 - File-based local storage (JSON)
 
 ### Run locally
